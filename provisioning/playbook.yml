@@ -23,20 +23,12 @@
       - named.d*
   - name: copy resolv.conf to the servers
     copy: src=servers-resolv.conf dest=/etc/resolv.conf owner=root group=root mode=0644
-  
+
   - name: set /etc/named permissions
     file: path=/etc/named owner=root group=named mode=0670
 
   - name: ensure named is running and enabled
     service: name=named state=restarted enabled=yes
-
-#  - name: Change the named_t domain to permissive
-#    selinux_permissive:
-#      name: named_t
-#      permissive: true
-
-  - name: restart named
-    service: name=named state=restarted
 
 - hosts: ns02
   sudo: yes
@@ -51,7 +43,18 @@
 
   - name: ensure named is running and enabled
     service: name=named state=restarted enabled=yes
-    
+
+  - name: install policycoreutils-python
+    yum: name=policycoreutils-python state=latest
+
+  - name: Change the named_t domain to permissive
+    selinux_permissive:
+      name: named_t
+      permissive: true
+
+  - name: restart named
+    service: name=named state=restarted
+
 - hosts: client
   sudo: yes
   tasks:
@@ -62,7 +65,7 @@
   - name: copy motd to the client
     copy: src=client-motd dest=/etc/motd owner=root group=root mode=0644
 
-- hosts: client2
+  - hosts: client2
   sudo: yes
   tasks:
   - name: copy resolv.conf to the client
@@ -71,4 +74,3 @@
     copy: src=rndc.conf dest=/home/vagrant/rndc.conf owner=vagrant group=vagrant mode=0644
   - name: copy motd to the client
     copy: src=client-motd dest=/etc/motd owner=root group=root mode=0644
-
