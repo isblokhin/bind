@@ -14,9 +14,8 @@ $ORIGIN dns.lab.
 ; DNS Servers
 ns01            IN      A       192.168.50.10
 ns02            IN      A       192.168.50.11
-; others
-client          IN      A       192.168.50.15
-client2         IN      A       192.168.50.16
-web1            IN      CNAME   client
-web2            IN      CNAME   client2
-
+; Clients
+client         IN      A       192.168.50.15
+client2        IN      A       192.168.50.16
+web1           IN      CNAME   client
+web2           IN      CNAME   client2
